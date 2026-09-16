@@ -1,0 +1,5 @@
+@model Nop.Web.Models.Customer.CustomerNavigationModel
+
+<li class="customer-mcpserver @(Model.SelectedTab == McpServerDefaults.CustomerTokensTabId ? "active" : "inactive")">
+    <a href="@Url.RouteUrl(McpServerDefaults.CustomerTokensRouteName)">MCP Config</a>
+</li>

@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nop.Web.Framework.Components;
-using Nop.Plugin.AI.McpApp.Services;
-using Nop.Plugin.AI.McpApp.Models;
 using Nop.Core;
+using Nop.Plugin.AI.McpServer.Models;
+using Nop.Plugin.AI.McpServer.Services;
 
-namespace Nop.Plugin.AI.McpApp.Components;
+namespace Nop.Plugin.AI.McpServer.Components;
 
-public class McpAppCustomerInfoViewComponent : NopViewComponent
+public class McpServerCustomerInfoViewComponent : NopViewComponent
 {
     private readonly IPersonalAccessTokenService _patService;
     private readonly IWorkContext _workContext;
 
-    public McpAppCustomerInfoViewComponent(IPersonalAccessTokenService patService, IWorkContext workContext)
+    public McpServerCustomerInfoViewComponent(IPersonalAccessTokenService patService, IWorkContext workContext)
     {
         _patService = patService;
         _workContext = workContext;
@@ -36,6 +36,6 @@ public class McpAppCustomerInfoViewComponent : NopViewComponent
             }
         }
 
-        return View("~/Plugins/AI.McpApp/Views/McpAppCustomerInfo.cshtml", model);
+        return View("~/Plugins/AI.Server/Views/McpServerCustomerInfo.cshtml", model);
     }
 }

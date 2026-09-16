@@ -2,12 +2,12 @@
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Vendors;
 using Nop.Data;
-using Nop.Plugin.AI.McpApp.Models;
+using Nop.Plugin.AI.McpServer.Models;
 using Nop.Services.Catalog;
 using Nop.Services.Security;
 using Nop.Services.Stores;
 
-namespace Nop.Plugin.AI.McpApp.Services;
+namespace Nop.Plugin.AI.McpServer.Services;
 
 public class SimplifiedProductService : ISimplifiedProductService
 {

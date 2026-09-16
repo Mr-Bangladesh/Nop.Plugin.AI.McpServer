@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
-using Nop.Plugin.AI.McpApp;
-using Nop.Plugin.AI.McpApp.Services;
+using Nop.Plugin.AI.McpServer;
+using Nop.Plugin.AI.McpServer.Services;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Infrastructure;
 
-namespace Nop.Plugin.AI.McpApp.Infrastructure;
+namespace Nop.Plugin.AI.McpServer.Infrastructure;
 
 /// <summary>
 /// Represents plugin route provider
@@ -26,17 +26,17 @@ public class RouteProvider : BaseRouteProvider, IRouteProvider
 
         var lang = GetLanguageRoutePattern();
 
-        endpointRouteBuilder.MapControllerRoute(name: McpAppDefaults.CustomerTokensRouteName,
+        endpointRouteBuilder.MapControllerRoute(name: McpServerDefaults.CustomerTokensRouteName,
             pattern: $"{lang}/customer/mcp-app",
-            defaults: new { controller = "McpAppPublic", action = "CustomerTokens" });
+            defaults: new { controller = "McpServerPublic", action = "CustomerTokens" });
 
-        endpointRouteBuilder.MapControllerRoute(name: McpAppDefaults.GenerateTokenRouteName,
+        endpointRouteBuilder.MapControllerRoute(name: McpServerDefaults.GenerateTokenRouteName,
             pattern: $"{lang}/mcpapp/generate-token",
-            defaults: new { controller = "McpAppPublic", action = "GenerateToken" });
+            defaults: new { controller = "McpServerPublic", action = "GenerateToken" });
 
-        endpointRouteBuilder.MapControllerRoute(name: McpAppDefaults.RevokeTokenRouteName,
+        endpointRouteBuilder.MapControllerRoute(name: McpServerDefaults.RevokeTokenRouteName,
             pattern: $"{lang}/mcpapp/revoke-token",
-            defaults: new { controller = "McpAppPublic", action = "RevokeToken" });
+            defaults: new { controller = "McpServerPublic", action = "RevokeToken" });
     }
 
     /// <summary>

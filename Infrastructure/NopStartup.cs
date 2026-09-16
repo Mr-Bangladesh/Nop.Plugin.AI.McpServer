@@ -4,12 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nop.Core;
 using Nop.Core.Infrastructure;
-using Nop.Plugin.AI.McpApp.Mcp.Resources;
-using Nop.Plugin.AI.McpApp.Mcp.Tools;
-using Nop.Plugin.AI.McpApp.Services;
+using Nop.Plugin.AI.McpServer.Mcp.Resources;
+using Nop.Plugin.AI.McpServer.Mcp.Tools;
+using Nop.Plugin.AI.McpServer.Services;
 using Nop.Services.Customers;
 
-namespace Nop.Plugin.AI.McpApp.Infrastructure;
+namespace Nop.Plugin.AI.McpServer.Infrastructure;
 
 public class NopStartup : INopStartup
 {

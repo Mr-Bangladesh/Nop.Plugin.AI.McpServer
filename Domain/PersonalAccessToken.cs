@@ -1,6 +1,6 @@
 ﻿using Nop.Core;
 
-namespace Nop.Plugin.AI.McpApp.Domain;
+namespace Nop.Plugin.AI.McpServer.Domain;
 
 public class PersonalAccessToken : BaseEntity
 {

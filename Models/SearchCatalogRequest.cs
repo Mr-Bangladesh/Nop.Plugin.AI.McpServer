@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace Nop.Plugin.AI.McpApp.Models;
+namespace Nop.Plugin.AI.McpServer.Models;
 
 public class SearchCatalogRequest
 {

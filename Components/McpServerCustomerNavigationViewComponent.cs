@@ -4,18 +4,22 @@ using Nop.Services.Customers;
 using Nop.Web.Framework.Components;
 using Nop.Web.Models.Customer;
 
-namespace Nop.Plugin.AI.McpApp.Components;
+namespace Nop.Plugin.AI.McpServer.Components;
 
-public class McpAppCustomerNavigationViewComponent : NopViewComponent
+public class McpServerCustomerNavigationViewComponent : NopViewComponent
 {
+    #region Fields
     private readonly ICustomerService _customerService;
     private readonly IWorkContext _workContext;
-
-    public McpAppCustomerNavigationViewComponent(ICustomerService customerService, IWorkContext workContext)
+    #endregion
+    
+    #region ctor
+    public McpServerCustomerNavigationViewComponent(ICustomerService customerService, IWorkContext workContext)
     {
         _customerService = customerService;
         _workContext = workContext;
     }
+    #endregion
 
     public async Task<IViewComponentResult> InvokeAsync(string widgetZone, object additionalData)
     {
@@ -26,6 +30,6 @@ public class McpAppCustomerNavigationViewComponent : NopViewComponent
         if (await _customerService.IsGuestAsync(customer))
             return Content(string.Empty);
 
-        return await ViewAsync("~/Plugins/AI.McpApp/Views/Components/CustomerMcpAppMenu.cshtml", model);
+        return await ViewAsync("~/Plugins/AI.McpServer/Views/Components/CustomerMcpServerMenu.cshtml", model);
     }
 }

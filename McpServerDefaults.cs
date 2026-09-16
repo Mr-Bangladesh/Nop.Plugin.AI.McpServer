@@ -1,6 +1,6 @@
-﻿namespace Nop.Plugin.AI.McpApp;
+﻿namespace Nop.Plugin.AI.McpServer;
 
-public static class McpAppDefaults
+public static class McpServerDefaults
 {
     public const string SystemName = "AI.McpApp";
 

@@ -3,9 +3,9 @@ using System.Text;
 using Nop.Core.Domain.Customers;
 using Nop.Services.Customers;
 using Nop.Data;
-using Nop.Plugin.AI.McpApp.Domain;
+using Nop.Plugin.AI.McpServer.Domain;
 
-namespace Nop.Plugin.AI.McpApp.Services;
+namespace Nop.Plugin.AI.McpServer.Services;
 
 public class PersonalAccessTokenService : IPersonalAccessTokenService
 {

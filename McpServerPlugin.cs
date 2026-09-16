@@ -1,17 +1,17 @@
-﻿using Nop.Plugin.AI.McpApp.Components;
+﻿using Nop.Plugin.AI.McpServer.Components;
 using Nop.Services.Cms;
 using Nop.Services.Common;
 using Nop.Services.Plugins;
 using Nop.Web.Framework.Infrastructure;
 
-namespace Nop.Plugin.AI.McpApp;
+namespace Nop.Plugin.AI.McpServer;
 
-public class McpAppPlugin : BasePlugin, IWidgetPlugin
+public class McpServerPlugin : BasePlugin, IWidgetPlugin
 {
     public Type GetWidgetViewComponent(string widgetZone)
     {
         if (widgetZone == PublicWidgetZones.AccountNavigationAfter)
-            return typeof(McpAppCustomerNavigationViewComponent);
+            return typeof(McpServerCustomerNavigationViewComponent);
 
         return null;
     }

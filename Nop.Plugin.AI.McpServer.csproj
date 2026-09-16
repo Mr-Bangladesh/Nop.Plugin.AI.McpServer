@@ -4,11 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <Copyright>Copyright © Mr_Bangladesh</Copyright>
     <Authors>Mr_Bangladesh</Authors>
-    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageLicenseUrl>NA</PackageLicenseUrl>
     <PackageProjectUrl>https://www.nopcommerce.com/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nopSolutions/nopCommerce</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <OutputPath>$(SolutionDir)\Presentation\Nop.Web\Plugins\AI.McpApp</OutputPath>
+    <OutputPath>$(SolutionDir)\Presentation\Nop.Web\Plugins\AI.McpServer</OutputPath>
     <OutDir>$(OutputPath)</OutDir>
     <!--Set this parameter to true to get the dlls copied from the NuGet cache to the output of your project.
     You need to set this parameter to true if your plugin has a nuget package 
@@ -20,7 +20,7 @@
   <ItemGroup>
     <None Remove="logo.png" />
     <None Remove="plugin.json" />
-    <None Remove="Views\Components\CustomerMcpAppMenu.cshtml" />
+    <None Remove="Views\Components\CustomerMcpServerMenu.cshtml" />
     <None Remove="Views\CustomerTokens.cshtml" />
     <None Remove="Views\McpAppCustomerInfo.cshtml" />
     <None Remove="Views\_ViewImports.cshtml" />
@@ -33,10 +33,10 @@
     <Content Include="plugin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\CustomerTokens.cshtml">
+    <Content Include="Views\Components\CustomerMcpServerMenu.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\McpAppCustomerInfo.cshtml">
+    <Content Include="Views\CustomerTokens.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -46,9 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Views\Components\CustomerMcpAppMenu.cshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Views\_ViewImports.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

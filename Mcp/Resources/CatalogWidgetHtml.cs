@@ -1,4 +1,4 @@
-﻿namespace Nop.Plugin.AI.McpApp.Mcp.Resources;
+﻿namespace Nop.Plugin.AI.McpServer.Mcp.Resources;
 
 public static class CatalogWidgetHtml
 {

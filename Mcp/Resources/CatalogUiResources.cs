@@ -4,7 +4,7 @@ using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using Nop.Core;
 
-namespace Nop.Plugin.AI.McpApp.Mcp.Resources;
+namespace Nop.Plugin.AI.McpServer.Mcp.Resources;
 
 [McpServerResourceType]
 public class CatalogUiResources

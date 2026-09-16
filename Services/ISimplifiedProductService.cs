@@ -1,8 +1,8 @@
 ﻿using Nop.Core;
 using Nop.Core.Domain.Catalog;
-using Nop.Plugin.AI.McpApp.Models;
+using Nop.Plugin.AI.McpServer.Models;
 
-namespace Nop.Plugin.AI.McpApp.Services;
+namespace Nop.Plugin.AI.McpServer.Services;
 
 public interface ISimplifiedProductService
 {

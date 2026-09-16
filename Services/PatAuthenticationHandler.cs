@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Nop.Core;
 using Nop.Services.Customers;
 
-namespace Nop.Plugin.AI.McpApp.Services;
+namespace Nop.Plugin.AI.McpServer.Services;
 
 public class PatAuthenticationOptions : AuthenticationSchemeOptions { }
 

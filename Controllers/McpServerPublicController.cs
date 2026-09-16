@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
-using Nop.Plugin.AI.McpApp.Models;
-using Nop.Plugin.AI.McpApp.Services;
+using Nop.Plugin.AI.McpServer.Models;
+using Nop.Plugin.AI.McpServer.Services;
 using Nop.Services.Customers;
 using Nop.Web.Controllers;
 
-namespace Nop.Plugin.AI.McpApp.Controllers;
+namespace Nop.Plugin.AI.McpServer.Controllers;
 
 [AutoValidateAntiforgeryToken]
-public class McpAppPublicController : BasePublicController
+public class McpServerPublicController : BasePublicController
 {
     private readonly IPersonalAccessTokenService _patService;
     private readonly ICustomerService _customerService;
     private readonly IWorkContext _workContext;
 
-    public McpAppPublicController(IPersonalAccessTokenService patService,
+    public McpServerPublicController(IPersonalAccessTokenService patService,
         ICustomerService customerService,
         IWorkContext workContext)
     {
@@ -60,7 +60,7 @@ public class McpAppPublicController : BasePublicController
             model.Masked = model.Tokens.First().Masked;
         }
 
-        return View("~/Plugins/AI.McpApp/Views/CustomerTokens.cshtml", model);
+        return View("~/Plugins/AI.McpServer/Views/CustomerTokens.cshtml", model);
     }
 
     [HttpPost]

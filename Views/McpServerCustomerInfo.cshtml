@@ -1,45 +1,45 @@
 
-@model Nop.Plugin.AI.McpApp.Models.PersonalAccessTokenModel
+@model Nop.Plugin.AI.McpServer.Models.PersonalAccessTokenModel
 
-<div id="mcpapp-token-container">
-	<form id="mcpapp-token-form">
+<div id="mcpserver-token-container">
+	<form id="mcpserver-token-form">
 		@Html.AntiForgeryToken()
 	</form>
 
 	<div>
 		<strong>Your PAT:</strong>
-		<span id="mcpapp-masked">@Model.Masked</span>
+		<span id="mcpserver-masked">@Model.Masked</span>
 	</div>
 
 	<div style="margin-top:8px;">
-		<button id="mcpapp-generate-btn" class="btn btn-primary">@(Model.HasToken ? "Regenerate" : "Generate")</button>
-		<button id="mcpapp-copy-btn" class="btn btn-secondary" style="margin-left:8px;">Copy</button>
+		<button id="mcpserver-generate-btn" class="btn btn-primary">@(Model.HasToken ? "Regenerate" : "Generate")</button>
+		<button id="mcpserver-copy-btn" class="btn btn-secondary" style="margin-left:8px;">Copy</button>
 	</div>
 
-	<div id="mcpapp-plain-section" style="display:none; margin-top:8px;">
+	<div id="mcpserver-plain-section" style="display:none; margin-top:8px;">
 		<label>Copy this token now (shown only once):</label>
-		<input type="text" id="mcpapp-plain-token" readonly style="width:100%;" />
+		<input type="text" id="mcpserver-plain-token" readonly style="width:100%;" />
 	</div>
 </div>
 
 <script>
 	(function(){
-		var generateBtn = document.getElementById('mcpapp-generate-btn');
-		var copyBtn = document.getElementById('mcpapp-copy-btn');
-		var maskedEl = document.getElementById('mcpapp-masked');
-		var plainSection = document.getElementById('mcpapp-plain-section');
-		var plainInput = document.getElementById('mcpapp-plain-token');
+		var generateBtn = document.getElementById('mcpserver-generate-btn');
+		var copyBtn = document.getElementById('mcpserver-copy-btn');
+		var maskedEl = document.getElementById('mcpserver-masked');
+		var plainSection = document.getElementById('mcpserver-plain-section');
+		var plainInput = document.getElementById('mcpserver-plain-token');
 		var plainToken = null;
 
 		function getAntiForgeryToken(){
-			var tokenInput = document.querySelector('#mcpapp-token-form input[name="__RequestVerificationToken"]');
+			var tokenInput = document.querySelector('#mcpserver-token-form input[name="__RequestVerificationToken"]');
 			return tokenInput ? tokenInput.value : '';
 		}
 
 		generateBtn.addEventListener('click', function(e){
 			e.preventDefault();
 			var token = getAntiForgeryToken();
-			var url = '@Url.Action("GenerateToken", "McpAppPublic", new { area = "" })';
+			var url = '@Url.Action("GenerateToken", "McpServerPublic", new { area = "" })';
 			fetch(url, {
 				method: 'POST',
 				headers: {

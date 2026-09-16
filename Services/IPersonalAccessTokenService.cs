@@ -1,7 +1,7 @@
 ﻿using Nop.Core.Domain.Customers;
-using Nop.Plugin.AI.McpApp.Domain;
+using Nop.Plugin.AI.McpServer.Domain;
 
-namespace Nop.Plugin.AI.McpApp.Services;
+namespace Nop.Plugin.AI.McpServer.Services;
 
 public interface IPersonalAccessTokenService
 {

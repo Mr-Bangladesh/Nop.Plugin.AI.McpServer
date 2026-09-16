@@ -1,4 +1,4 @@
-@model Nop.Plugin.AI.McpApp.Models.PersonalAccessTokenModel
+@model Nop.Plugin.AI.McpServer.Models.PersonalAccessTokenModel
 
 @{
     Layout = "_ColumnsTwo";
@@ -12,7 +12,7 @@
 
 @section left
 {
-    @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = McpAppDefaults.CustomerTokensTabId })
+    @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = McpServerDefaults.CustomerTokensTabId })
 }
 
 <div class="page account-page customer-page">
@@ -103,7 +103,7 @@
                 e.preventDefault();
                 var name = tokenNameInput ? tokenNameInput.value : '';
                 var token = getAntiForgeryToken();
-                var url = '@Url.RouteUrl(McpAppDefaults.GenerateTokenRouteName)';
+                var url = '@Url.RouteUrl(McpServerDefaults.GenerateTokenRouteName)';
 
                 fetch(url, {
                     method: 'POST',
@@ -138,7 +138,7 @@
                 e.preventDefault();
                 var tokenId = button.getAttribute('data-token-id');
                 var token = getAntiForgeryToken();
-                var url = '@Url.RouteUrl(McpAppDefaults.RevokeTokenRouteName)';
+                var url = '@Url.RouteUrl(McpServerDefaults.RevokeTokenRouteName)';
 
                 fetch(url, {
                     method: 'POST',

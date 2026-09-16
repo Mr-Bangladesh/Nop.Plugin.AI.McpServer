@@ -2,11 +2,11 @@
 using System.Text.Json;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
-using Nop.Plugin.AI.McpApp.Models;
-using Nop.Plugin.AI.McpApp.Services;
+using Nop.Plugin.AI.McpServer.Models;
+using Nop.Plugin.AI.McpServer.Services;
 using Nop.Web.Factories;
 
-namespace Nop.Plugin.AI.McpApp.Mcp.Tools;
+namespace Nop.Plugin.AI.McpServer.Mcp.Tools;
 
 [McpServerToolType]
 public class NopCatalogTools

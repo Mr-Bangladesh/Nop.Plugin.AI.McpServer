@@ -4,13 +4,13 @@ using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using Nop.Core;
 using Nop.Core.Domain.Orders;
-using Nop.Plugin.AI.McpApp.Models;
+using Nop.Plugin.AI.McpServer.Models;
 using Nop.Services.Catalog;
 using Nop.Services.Orders;
 using Nop.Web.Factories;
 using Nop.Web.Models.ShoppingCart;
 
-namespace Nop.Plugin.AI.McpApp.Mcp.Tools;
+namespace Nop.Plugin.AI.McpServer.Mcp.Tools;
 
 [McpServerToolType]
 public class NopCartTools

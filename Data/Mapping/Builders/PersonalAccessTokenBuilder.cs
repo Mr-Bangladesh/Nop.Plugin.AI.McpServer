@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using FluentMigrator.Builders.Create.Table;
 using Nop.Data.Mapping.Builders;
-using Nop.Plugin.AI.McpApp.Domain;
+using Nop.Plugin.AI.McpServer.Domain;
 
-namespace Nop.Plugin.AI.McpApp.Data.Mapping.Builders;
+namespace Nop.Plugin.AI.McpServer.Data.Mapping.Builders;
 
 public class PersonalAccessTokenBuilder : NopEntityBuilder<PersonalAccessToken>
 {
