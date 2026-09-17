@@ -70,7 +70,10 @@ public class McpServerPublicController : BasePublicController
         if (customer == null)
             return Json(new { success = false, message = "Customer not found" });
 
-        var tokenName = string.IsNullOrWhiteSpace(name) ? "Web UI" : name.Trim();
+        var tokenName = name?.Trim();
+        if (string.IsNullOrWhiteSpace(tokenName))
+            return Json(new { success = false, message = "Please enter a token name before generating a token." });
+
         var (tokenEntity, raw) = await _patService.CreateTokenAsync(customer.CustomerGuid, tokenName, null, null);
         if (tokenEntity == null)
             return Json(new { success = false, message = "Failed to create token" });

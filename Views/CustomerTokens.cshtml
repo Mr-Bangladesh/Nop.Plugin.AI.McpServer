@@ -7,7 +7,7 @@
     NopHtml.AddTitleParts(T("PageTitle.Account").Text);
 
     NopHtml.AppendPageCssClassParts("html-account-page");
-    NopHtml.AppendPageCssClassParts("html-mcpapp-pat-page");
+    NopHtml.AppendPageCssClassParts("html-mcpserver-pat-page");
 }
 
 @section left
@@ -21,26 +21,21 @@
     </div>
 
     <div class="page-body">
-        <div id="mcpapp-token-container">
-            <form id="mcpapp-token-form">
+        <div id="mcpserver-token-container">
+            <form id="mcpserver-token-form">
                 @Html.AntiForgeryToken()
                 <section class="fieldset">
                     <div class="form-fields">
                         <div class="inputs">
-                            <label for="mcpapp-token-name">Token name</label>
-                            <input type="text" id="mcpapp-token-name" name="name" class="text-box single-line" maxlength="100" placeholder="Example: Web UI" />
+                            <label for="mcpserver-token-name">Token name</label>
+                            <input type="text" id="mcpserver-token-name" name="name" class="text-box single-line" maxlength="100" placeholder="Example: Web UI" required />
                         </div>
                     </div>
                     <div class="buttons">
-                        <button id="mcpapp-generate-btn" type="button" class="button-1">Generate</button>
+                        <button id="mcpserver-generate-btn" type="button" class="button-1" disabled aria-disabled="true">Generate</button>
                     </div>
                 </section>
             </form>
-
-            <div id="mcpapp-plain-section" style="display:none; margin-top:8px;">
-                <label>Copy this token now. It will only be shown once on this page:</label>
-                <input type="text" id="mcpapp-plain-token" readonly class="text-box single-line" style="width:100%;" />
-            </div>
 
             <h3 style="margin-top:24px;">Token history</h3>
             @if (Model.Tokens.Any())
@@ -67,7 +62,7 @@
                                     <td>
                                         @if (token.CanRevoke)
                                         {
-                                            <button type="button" class="button-2 mcpapp-revoke-btn" data-token-id="@token.Id">Revoke</button>
+                                            <button type="button" class="button-2 mcpserver-revoke-btn" data-token-id="@token.Id">Revoke</button>
                                         }
                                     </td>
                                 </tr>
@@ -82,30 +77,207 @@
             }
         </div>
     </div>
+
+    <div id="mcpserver-token-modal" role="dialog" aria-modal="true" aria-labelledby="mcpserver-token-modal-title" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center;">
+        <div style="position:relative; width:min(560px, calc(100% - 24px)); background:#fff; border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.2); padding:20px 20px 16px;">
+            <button type="button" id="mcpserver-token-modal-close" aria-label="Close" style="position:absolute; top:10px; right:12px; border:none; background:transparent; font-size:28px; line-height:1; cursor:pointer; color:#666;">&times;</button>
+            <h3 id="mcpserver-token-modal-title" style="margin:0 32px 12px 0;">Your new token</h3>
+            <p style="margin:0 0 12px; color:#444;">Copy this token now. It will only be shown once on this page.</p>
+            <input type="text" id="mcpserver-plain-token" readonly class="text-box single-line" style="width:100%; box-sizing:border-box; margin-bottom:12px;" />
+            <div style="display:flex; justify-content:flex-end; align-items:center; gap:8px;">
+                <button type="button" id="mcpserver-copy-token-btn" class="button-1">Copy</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     (function () {
-        var generateBtn = document.getElementById('mcpapp-generate-btn');
-        var plainSection = document.getElementById('mcpapp-plain-section');
-        var plainInput = document.getElementById('mcpapp-plain-token');
-        var maskedEl = document.getElementById('mcpapp-masked');
-        var tokenNameInput = document.getElementById('mcpapp-token-name');
-        var plainToken = null;
+        var generateBtn = document.getElementById('mcpserver-generate-btn');
+        var tokenModal = document.getElementById('mcpserver-token-modal');
+        var plainInput = document.getElementById('mcpserver-plain-token');
+        var copyTokenBtn = document.getElementById('mcpserver-copy-token-btn');
+        var modalCloseBtn = document.getElementById('mcpserver-token-modal-close');
+        var tokenNameInput = document.getElementById('mcpserver-token-name');
+        var container = document.getElementById('mcpserver-token-container');
+        var customerTokensUrl = '@Url.RouteUrl(McpServerDefaults.CustomerTokensRouteName)';
+        var generateUrl = '@Url.RouteUrl(McpServerDefaults.GenerateTokenRouteName)';
+        var revokeUrl = '@Url.RouteUrl(McpServerDefaults.RevokeTokenRouteName)';
+
+        function showGeneratedTokenModal(token) {
+            if (!tokenModal || !plainInput) return;
+            plainInput.value = token || '';
+            plainInput.blur();
+            tokenModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideGeneratedTokenModal() {
+            if (!tokenModal) return;
+            tokenModal.style.display = 'none';
+            if (plainInput) {
+                plainInput.value = '';
+                plainInput.blur();
+                if (typeof plainInput.setSelectionRange === 'function') {
+                    plainInput.setSelectionRange(0, 0);
+                }
+            }
+            document.body.style.overflow = '';
+        }
+
+        function copyGeneratedToken() {
+            if (!plainInput || !plainInput.value) return;
+
+            var tokenValue = plainInput.value;
+            var fallbackCopy = function () {
+                var tempInput = document.createElement('textarea');
+                tempInput.value = tokenValue;
+                tempInput.setAttribute('readonly', '');
+                tempInput.style.position = 'fixed';
+                tempInput.style.top = '-9999px';
+                document.body.appendChild(tempInput);
+                tempInput.focus();
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                } catch (e) {
+                    console.error('Failed to copy token', e);
+                }
+                document.body.removeChild(tempInput);
+                plainInput.blur();
+            };
+
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(tokenValue)
+                        .then(function () {
+                            plainInput.blur();
+                            if (copyTokenBtn) {
+                                var previousText = copyTokenBtn.textContent;
+                                copyTokenBtn.textContent = 'Copied';
+                                setTimeout(function () {
+                                    if (copyTokenBtn) {
+                                        copyTokenBtn.textContent = previousText;
+                                    }
+                                }, 1200);
+                            }
+                        })
+                        .catch(fallbackCopy);
+                    return;
+                }
+
+                fallbackCopy();
+            } catch (e) {
+                console.error('Failed to copy token', e);
+            }
+        }
 
         function getAntiForgeryToken() {
-            var tokenInput = document.querySelector('#mcpapp-token-form input[name="__RequestVerificationToken"]');
+            var tokenInput = document.querySelector('#mcpserver-token-form input[name="__RequestVerificationToken"]');
             return tokenInput ? tokenInput.value : '';
         }
 
-        if (generateBtn) {
-            generateBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                var name = tokenNameInput ? tokenNameInput.value : '';
-                var token = getAntiForgeryToken();
-                var url = '@Url.RouteUrl(McpServerDefaults.GenerateTokenRouteName)';
+        function attachRevokeHandlers() {
+            document.querySelectorAll('.mcpserver-revoke-btn').forEach(function (button) {
+                // avoid double-binding
+                if (button._mcp_bound) return;
+                button._mcp_bound = true;
 
-                fetch(url, {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var tokenId = button.getAttribute('data-token-id');
+                    var token = getAntiForgeryToken();
+
+                    fetch(revokeUrl, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': token,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                        },
+                        body: 'tokenId=' + encodeURIComponent(tokenId),
+                        credentials: 'same-origin'
+                    }).then(function (r) { return r.json(); }).then(function (json) {
+                        if (json && json.success) {
+                            refreshTokenList();
+                        } else {
+                            alert((json && json.message) || 'Failed to revoke token');
+                        }
+                    }).catch(function () {
+                        alert('Failed to revoke token');
+                    });
+                });
+            });
+        }
+
+        function refreshTokenList() {
+            fetch(customerTokensUrl, { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function (r) { return r.text(); })
+                .then(function (html) {
+                    try {
+                        var tmp = document.createElement('div');
+                        tmp.innerHTML = html;
+                        var newContainer = tmp.querySelector('#mcpserver-token-container');
+                        if (newContainer && container) {
+                            container.innerHTML = newContainer.innerHTML;
+                            generateBtn = document.getElementById('mcpserver-generate-btn');
+                            tokenNameInput = document.getElementById('mcpserver-token-name');
+                            bindGenerateButton();
+                            attachRevokeHandlers();
+                        }
+                    } catch (e) {
+                        // silently fail - keep existing UI
+                        console.error('Failed to refresh token list', e);
+                    }
+                }).catch(function () {
+                    // ignore refresh error
+                });
+        }
+
+        function validateTokenName(name) {
+            return typeof name === 'string' ? name.trim() : '';
+        }
+
+        function updateGenerateButtonState() {
+            var btn = document.getElementById('mcpserver-generate-btn');
+            if (!btn) return;
+            var trimmedName = validateTokenName(tokenNameInput ? tokenNameInput.value : '');
+            btn.disabled = trimmedName.length === 0;
+            btn.setAttribute('aria-disabled', trimmedName.length === 0 ? 'true' : 'false');
+        }
+
+        function bindGenerateButton() {
+            var currentGenerateBtn = document.getElementById('mcpserver-generate-btn');
+            if (!currentGenerateBtn || currentGenerateBtn._mcp_gen_bound) return;
+            currentGenerateBtn._mcp_gen_bound = true;
+
+            if (tokenNameInput) {
+                tokenNameInput.addEventListener('input', function () {
+                    updateGenerateButtonState();
+                });
+            }
+
+            updateGenerateButtonState();
+
+            currentGenerateBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var name = validateTokenName(tokenNameInput ? tokenNameInput.value : '');
+                if (!name) {
+                    if (tokenNameInput) {
+                        tokenNameInput.focus();
+                        tokenNameInput.setAttribute('aria-invalid', 'true');
+                    }
+                    alert('Please enter a token name before generating a token.');
+                    return;
+                }
+
+                if (tokenNameInput) {
+                    tokenNameInput.removeAttribute('aria-invalid');
+                }
+
+                var token = getAntiForgeryToken();
+
+                fetch(generateUrl, {
                     method: 'POST',
                     headers: {
                         'RequestVerificationToken': token,
@@ -114,51 +286,60 @@
                     },
                     body: 'name=' + encodeURIComponent(name),
                     credentials: 'same-origin'
-                }).then(function (r) { return r.json(); }).then(function (json) {
-                    if (json && json.success) {
-                        plainToken = json.token || null;
-                        plainInput.value = plainToken || '';
-                        plainSection.style.display = 'block';
-                        maskedEl.textContent = json.masked || maskedEl.textContent;
-                        generateBtn.textContent = 'Generate another';
-                        tokenNameInput.value = '';
-                        plainInput.focus();
-                        plainInput.select();
-                    } else {
-                        alert((json && json.message) || 'Failed to generate token');
+                })
+                .then(function (r) {
+                    var ct = (r.headers && r.headers.get) ? (r.headers.get('content-type') || '') : '';
+                    if (ct.indexOf('application/json') !== -1) {
+                        return r.json();
                     }
-                }).catch(function () {
+                    return r.text().then(function (text) {
+                        try { return JSON.parse(text); } catch (e) { return { success: false, message: 'Server returned unexpected response' }; }
+                    });
+                })
+                .then(function (json) {
+                    try {
+                        if (json && json.success) {
+                            currentGenerateBtn.textContent = 'Generate another';
+                            if (tokenNameInput) tokenNameInput.value = '';
+                            updateGenerateButtonState();
+                            showGeneratedTokenModal(json.token || '');
+
+                            try {
+                                refreshTokenList();
+                            } catch (e) {
+                                console.error('refreshTokenList() failed', e);
+                            }
+                        } else {
+                            alert((json && json.message) || 'Failed to generate token');
+                        }
+                    } catch (e) {
+                        console.error('Error handling generate response', e);
+                        alert('Failed to generate token');
+                    }
+                })
+                .catch(function () {
                     alert('Failed to generate token');
                 });
             });
         }
 
-        document.querySelectorAll('.mcpapp-revoke-btn').forEach(function (button) {
-            button.addEventListener('click', function (e) {
+        if (copyTokenBtn) {
+            copyTokenBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                var tokenId = button.getAttribute('data-token-id');
-                var token = getAntiForgeryToken();
-                var url = '@Url.RouteUrl(McpServerDefaults.RevokeTokenRouteName)';
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'RequestVerificationToken': token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-                    },
-                    body: 'tokenId=' + encodeURIComponent(tokenId),
-                    credentials: 'same-origin'
-                }).then(function (r) { return r.json(); }).then(function (json) {
-                    if (json && json.success) {
-                        window.location.reload();
-                    } else {
-                        alert((json && json.message) || 'Failed to revoke token');
-                    }
-                }).catch(function () {
-                    alert('Failed to revoke token');
-                });
+                copyGeneratedToken();
             });
-        });
+        }
+
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                hideGeneratedTokenModal();
+            });
+        }
+
+        bindGenerateButton();
+
+        // attach initial revoke handlers
+        attachRevokeHandlers();
     })();
 </script>
